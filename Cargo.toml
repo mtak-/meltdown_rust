@@ -1,0 +1,18 @@
+[package]
+name = "meltdown_rust"
+version = "0.1.0"
+authors = ["tyler <tyler.m.kopf@gmail.com>"]
+
+[dependencies]
+llvmint = "*"
+page_size = "0.4.1"
+x86 = "*"
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+codegen-units = 1
+panic = 'unwind'
