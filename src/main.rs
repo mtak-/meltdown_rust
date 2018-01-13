@@ -74,8 +74,6 @@ fn time<F: FnOnce()>(f: F) -> u64 {
 // returns an elapsed time for accessing a memory location
 #[inline(always)]
 unsafe fn probe(adrs: *const u8) -> u64 {
-    // fences to prevent out of order execution
-    // rdtsc to get a timestamp and store it in time_start
     time(#[inline(always)]
     || {
         adrs.read_volatile();
@@ -83,10 +81,10 @@ unsafe fn probe(adrs: *const u8) -> u64 {
 }
 
 // To determine the value of some arbitrary memory address
-// 1. Allocate a huge buffer, and flush it from the cache
+// 1. Allocate a huge buffer (256 * PAGE_SIZE), and flush it from the cache
 // 2. start a speculative execution, which enables unpriviledged access to all memory
-// 3. read that byte from memory and use the value to bring a line into the cache that you control
-// 4. end speculative execution, it's not committed and the results are discarded, except for cache effects
+// 3. read that byte from memory and use the value to bring a line from the huge buffer into the cache
+// 4. end speculative execution, it's not committed and the results are discarded (or not), except for cache effects
 // 5. time probing the cache lines to see which one was brought into the cache
 // 6. the cache line with the shortest time to access corresponds to the value of the byte
 #[inline(always)]
