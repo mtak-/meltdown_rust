@@ -144,7 +144,7 @@ unsafe fn guess_byte(secret: *const u8, buf: *const u8) -> u8 {
 
 #[inline]
 fn human_readable(byte: u8) -> char {
-    if byte >= ' ' as u8 && byte <= '~' as u8 {
+    if byte >= b' ' && byte <= b'~' {
         byte as char
     } else {
         '.'
