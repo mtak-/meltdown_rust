@@ -1,7 +1,5 @@
-#![feature(alloc, allocator_api, heap_api)]
+#![feature(alloc, allocator_api)]
 #![feature(asm)]
-#![feature(core_intrinsics)]
-#![feature(never_type)]
 #![feature(pointer_methods)]
 #![feature(iterator_step_by)]
 
@@ -142,10 +140,9 @@ unsafe fn guess_byte(secret: *const u8, buf: *const u8) -> u8 {
 
 #[inline]
 fn human_readable(byte: u8) -> char {
-    if byte >= b' ' && byte <= b'~' {
-        byte as char
-    } else {
-        '.'
+    match byte {
+        b' '...b'~' => byte as char,
+        _ => '.',
     }
 }
 
